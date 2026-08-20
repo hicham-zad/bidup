@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: var(--font-jetbrains), ui-sans-serif, system-ui, sans-serif;
+  --color-brand-dark: #524646;
+  --color-brand-muted: #A8A492;
+  --color-brand-bg: #FCF2E5;
+  --color-brand-coral: #EC5B38;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-[#FCF2E5] text-[#524646] antialiased font-mono;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Outbid button attention animation — fires once when the URL is found */
+@keyframes bid-cta {
+  0%   { transform: scale(1);    box-shadow: 0 0 0px rgba(236,91,56,0); }
+  20%  { transform: scale(1.08); box-shadow: 0 0 18px rgba(236,91,56,0.6); }
+  40%  { transform: scale(0.98); box-shadow: 0 0 10px rgba(236,91,56,0.3); }
+  60%  { transform: scale(1.05); box-shadow: 0 0 22px rgba(236,91,56,0.7); }
+  80%  { transform: scale(0.99); box-shadow: 0 0 8px  rgba(236,91,56,0.3); }
+  100% { transform: scale(1);    box-shadow: 0 0 0px rgba(236,91,56,0); }
 }
+
+@utility animate-bid-cta {
+  animation: bid-cta 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
