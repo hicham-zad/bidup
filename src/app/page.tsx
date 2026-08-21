@@ -3,23 +3,31 @@ import Leaderboard from '@/components/Leaderboard';
 import BidForm from '@/components/BidForm';
 import { getSupabaseAdmin } from '@/utils/supabase-admin';
 import { HeaderStats } from '@/components/HeaderStats';
+import { unstable_cache } from 'next/cache';
 
-export const dynamic = 'force-dynamic';
+// Serve from cache, revalidate in background every 30 seconds.
+// The Stripe webhook also calls revalidatePath('/') so cache busts immediately on new bids.
+export const revalidate = 30;
+
+const getLeaderboardEntries = unstable_cache(
+  async () => {
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from('entries')
+      .select('id, handle, url, title, description, image_url, amount_cents, clicks, last_bid_at')
+      .order('amount_cents', { ascending: false })
+      .limit(50);
+    if (error) console.error('Error fetching entries:', error);
+    return data || [];
+  },
+  ['leaderboard-entries'],
+  { revalidate: 30, tags: ['leaderboard'] }
+);
 
 export default async function Home() {
-  const supabase = getSupabaseAdmin();
+  const entries = await getLeaderboardEntries();
 
-  const { data: entries, error } = await supabase
-    .from('entries')
-    .select('id, handle, url, title, description, image_url, amount_cents, clicks, last_bid_at')
-    .order('amount_cents', { ascending: false })
-    .limit(50);
-
-  if (error) {
-    console.error('Error fetching entries:', error);
-  }
-
-  const validEntries = entries || [];
+  const validEntries = entries;
   const topBid = validEntries.length > 0 ? validEntries[0].amount_cents : 0;
 
   return (

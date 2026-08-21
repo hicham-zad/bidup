@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/utils/stripe';
 import { getSupabaseAdmin } from '@/utils/supabase-admin';
+import { revalidatePath, updateTag } from 'next/cache';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -61,6 +62,10 @@ export async function POST(req: Request) {
 
           if (updateError) {
             console.error('Error updating entry:', updateError);
+          } else {
+            // Bust ISR cache immediately so the new leaderboard is live
+            updateTag('leaderboard');
+            revalidatePath('/');
           }
         } else {
           // Insert new row
@@ -79,6 +84,10 @@ export async function POST(req: Request) {
 
           if (insertError) {
             console.error('Error inserting entry:', insertError);
+          } else {
+            // Bust ISR cache immediately so the new leaderboard is live
+            updateTag('leaderboard');
+            revalidatePath('/');
           }
         }
       }

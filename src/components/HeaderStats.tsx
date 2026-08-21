@@ -30,7 +30,8 @@ export function HeaderStats() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!stats) return null;
+  // Show skeleton immediately; fill in real count once the fetch resolves.
+  const isLoaded = stats !== null;
 
   return (
     <div className="flex items-center gap-2.5 text-[13px] sm:text-sm border border-[#A8A492]/20 bg-[#FDFBF8]/80 backdrop-blur-sm shadow-sm px-4 py-1.5 rounded-full text-[#524646] font-medium transition-all">
@@ -42,7 +43,11 @@ export function HeaderStats() {
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#10B981]"></span>
         </span>
         <span className="text-[#10B981] font-semibold tracking-tight">
-          {stats.activeUsers.toLocaleString()} visitors online
+          {isLoaded ? (
+            <>{stats.activeUsers.toLocaleString()} visitors online</>
+          ) : (
+            <span className="inline-block w-24 h-3.5 rounded bg-[#10B981]/20 animate-pulse align-middle" />
+          )}
         </span>
       </div>
 
