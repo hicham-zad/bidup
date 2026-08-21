@@ -98,7 +98,7 @@ export default function BidForm({ topBid }: { topBid: number }) {
   return (
     <div id="bid-form" className="w-full max-w-3xl flex flex-col items-center">
       {/* Interactive Claim & Bid Stepper */}
-      <div className="flex flex-col items-center gap-2 mb-5">
+      <div className="flex flex-col items-center gap-2 mb-5 w-full">
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-2xl sm:text-4xl font-bold tracking-tight text-[#524646]">
           <h2>Claim #1 for</h2>
           
@@ -240,9 +240,9 @@ export default function BidForm({ topBid }: { topBid: number }) {
       </form>
 
       {/* Takeover pill */}
-      <div className="mt-4 border border-[#A8A492]/40 bg-white/70 backdrop-blur-sm px-5 py-2 rounded-full text-xs flex items-center gap-2 shadow-2xs">
-        <span className="text-[#EC5B38] font-semibold">Leaderboard takeover is live.</span>
-        <span className="text-[#524646]/70">The first page is locked · 1h 36m left.</span>
+      <div className="mt-4 border border-[#A8A492]/40 bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full text-xs flex flex-wrap items-center justify-center gap-x-2 gap-y-1 shadow-2xs text-center">
+        <span className="text-[#EC5B38] font-semibold whitespace-nowrap">Leaderboard takeover is live.</span>
+        <span className="text-[#524646]/70 whitespace-nowrap">The first page is locked · 1h 36m left.</span>
       </div>
     </div>
   );

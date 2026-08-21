@@ -96,10 +96,10 @@ function TopCard({ entry }: { entry: Entry }) {
   const stopProp = (e: React.MouseEvent) => e.stopPropagation();
 
   return (
-    <div className="relative mb-6">
+    <div className="relative mb-6 mt-3">
       {/* Crown */}
       <div
-        className="absolute -top-[16px] -left-[10px] text-[26px] z-10 select-none -rotate-[18deg]"
+        className="absolute -top-[18px] left-2 text-[26px] z-10 select-none -rotate-[18deg]"
         style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.18))' }}
         aria-hidden="true"
       >
@@ -111,67 +111,65 @@ function TopCard({ entry }: { entry: Entry }) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => handleCardClickOuter(entry.id)}
-        className="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 sm:p-4.5 rounded-2xl border border-[#E8DFCE] bg-[#FDFAF4] shadow-md hover:shadow-lg transition-shadow duration-200 w-full"
+        className="group relative flex flex-row items-start justify-between p-3.5 sm:p-5 rounded-2xl border border-[#E8DFCE] bg-[#FDFAF4] shadow-md hover:shadow-lg transition-shadow duration-200 w-full gap-3"
         style={{ boxShadow: '0 2px 16px 0 rgba(180,155,100,0.10), 0 1px 4px 0 rgba(0,0,0,0.06)' }}
         id={`top-card-${entry.id}`}
       >
-        <div className="flex items-start sm:items-center gap-3.5 sm:gap-5 w-full">
-          {/* Icon */}
-          <div className="hidden sm:flex shrink-0 w-11 h-11 rounded-xl overflow-hidden items-center justify-center bg-[#1A1A1A] border border-[#333] shadow-sm">
-            {entry.image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={entry.image_url}
-                alt=""
-                className="w-7 h-7 object-contain"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" className="w-6 h-6">
-                <path d="M9 18V5l12-2v13" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="6" cy="18" r="3" />
-                <circle cx="18" cy="16" r="3" />
-              </svg>
+        {/* Icon — visible on all sizes */}
+        <div className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden flex items-center justify-center bg-[#1A1A1A] border border-[#333] shadow-sm mt-0.5">
+          {entry.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={entry.image_url}
+              alt=""
+              className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="1.5" className="w-5 h-5 sm:w-6 sm:h-6">
+              <path d="M9 18V5l12-2v13" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg>
+          )}
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1 min-w-0">
+          {/* Title row */}
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="font-bold text-sm sm:text-base text-[#2D2416] group-hover:text-[#7A6535] transition-colors truncate">
+              {entry.title || entry.handle}
+            </span>
+            {isWebUrl(entry.url) && (
+              <span className="shrink-0 text-[10px] font-semibold text-[#7A6535] bg-[#EDE4CE] border border-[#D9CBA8] px-1.5 py-0.5 rounded-md tracking-wide uppercase">
+                WEB
+              </span>
             )}
           </div>
 
-          {/* Main content */}
-          <div className="flex-1 min-w-0 pr-3">
-            {/* Title row */}
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="font-bold text-sm sm:text-base text-[#2D2416] group-hover:text-[#7A6535] transition-colors truncate">
-                {entry.title || entry.handle}
-              </span>
-              {isWebUrl(entry.url) && (
-                <span className="shrink-0 text-[10px] font-semibold text-[#7A6535] bg-[#EDE4CE] border border-[#D9CBA8] px-1.5 py-0.5 rounded-md tracking-wide uppercase">
-                  WEB
-                </span>
-              )}
-            </div>
+          {/* Description */}
+          {entry.description && (
+            <p className="text-xs sm:text-sm text-[#7A6535]/80 line-clamp-2 leading-relaxed mb-1 mt-0.5">
+              {entry.description}
+            </p>
+          )}
 
-            {/* Description */}
-            {entry.description && (
-              <p className="text-xs sm:text-sm text-[#7A6535]/80 line-clamp-2 leading-relaxed mb-1 mt-0.5">
-                {entry.description}
-              </p>
-            )}
-
-            {/* Stats row — the live holding timer */}
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-medium text-[#B8942A] mt-1.5">
-              <span className="flex items-center gap-1">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#B8942A] animate-pulse" />
-                holding #1 for&nbsp;<strong className="font-mono tabular-nums">{elapsed}</strong>
-              </span>
-              <span className="text-[#D9CBA8]">·</span>
-              <span className="text-[#EC5B38] font-bold">{entry.clicks.toLocaleString()} click{entry.clicks !== 1 ? 's' : ''}</span>
-              <span className="text-[#D9CBA8]">·</span>
-              <span>{timeAgo(entry.last_bid_at)}</span>
-            </div>
+          {/* Stats row — the live holding timer */}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-medium text-[#B8942A] mt-1.5">
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#B8942A] animate-pulse" />
+              holding #1 for&nbsp;<strong className="font-mono tabular-nums">{elapsed}</strong>
+            </span>
+            <span className="text-[#D9CBA8]">·</span>
+            <span className="text-[#EC5B38] font-bold">{entry.clicks.toLocaleString()} click{entry.clicks !== 1 ? 's' : ''}</span>
+            <span className="text-[#D9CBA8]">·</span>
+            <span>{timeAgo(entry.last_bid_at)}</span>
           </div>
         </div>
 
-        {/* Right side */}
-        <div className="mt-3 sm:mt-0 ml-0 sm:ml-2 shrink-0 flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto">
+        {/* Right side — price + steal button, always column-stacked */}
+        <div className="shrink-0 flex flex-col items-end justify-between gap-2 self-stretch">
           <span className="font-mono font-bold text-base sm:text-lg text-[#2D2416]">
             ${Math.floor(entry.amount_cents / 100)}
           </span>
@@ -182,7 +180,7 @@ function TopCard({ entry }: { entry: Entry }) {
               const el = document.getElementById('bid-form');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="shrink-0 mt-0 sm:mt-2 text-[11px] sm:text-xs font-semibold text-[#7A6535] border border-[#C9B87A] rounded-lg px-2.5 sm:px-3 py-1 hover:bg-[#F5EDD8] hover:border-[#B8942A] transition-all whitespace-nowrap"
+            className="shrink-0 text-[11px] sm:text-xs font-semibold text-[#7A6535] border border-[#C9B87A] rounded-lg px-2 sm:px-3 py-1 hover:bg-[#F5EDD8] hover:border-[#B8942A] transition-all whitespace-nowrap"
           >
             steal #1 for ${nextBid}
           </button>
@@ -300,49 +298,53 @@ export default function Leaderboard({ initialEntries }: { initialEntries: Entry[
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => handleCardClick(entry.id)}
-              className="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 sm:p-4.5 rounded-2xl transition-all duration-200 border bg-white border-[#A8A492]/30 hover:border-[#524646]/40 shadow-2xs"
+              className="group relative flex flex-row items-center justify-between p-3 sm:p-4 rounded-2xl transition-all duration-200 border bg-white border-[#A8A492]/30 hover:border-[#524646]/40 shadow-2xs gap-3"
               id={`entry-card-${entry.id}`}
             >
-              <div className="flex items-start sm:items-center gap-3.5 sm:gap-5 w-full">
+              {/* Rank badge */}
+              <span className="shrink-0 w-6 text-center font-bold text-xs text-[#A8A492] tabular-nums">
+                #{index + 1}
+              </span>
 
-                {/* Icon */}
-                <div className="hidden sm:flex shrink-0 w-11 h-11 rounded-xl overflow-hidden items-center justify-center bg-[#FCF2E5] border border-[#A8A492]/30">
-                  {entry.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={entry.image_url}
-                      alt=""
-                      className="w-7 h-7 object-contain"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5 text-[#A8A492]">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="2" y1="12" x2="22" y2="12" />
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
-                  )}
-                </div>
+              {/* Icon — visible on all sizes */}
+              <div className="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden flex items-center justify-center bg-[#FCF2E5] border border-[#A8A492]/30">
+                {entry.image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={entry.image_url}
+                    alt=""
+                    className="w-6 h-6 object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4 sm:w-5 sm:h-5 text-[#A8A492]">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  </svg>
+                )}
+              </div>
 
-                <div className="flex-1 min-w-0 pr-3">
-                  <h3 className="font-bold text-sm sm:text-base truncate text-[#524646] group-hover:text-[#EC5B38] transition-colors">
-                    {entry.title || entry.handle}
-                  </h3>
-                  {entry.description && (
-                    <p className="text-xs sm:text-sm text-[#524646]/75 line-clamp-2 mt-0.5 leading-relaxed">
-                      {entry.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2.5 mt-1.5 text-xs text-[#A8A492]">
-                    <span className="truncate max-w-[180px] text-[#A8A492] font-medium">{getDomain(entry.url)}</span>
-                    <span className="w-1 h-1 rounded-full bg-[#A8A492] shrink-0" />
-                    <span className="font-bold text-[#EC5B38] shrink-0">{entry.clicks.toLocaleString()} clicks</span>
-                  </div>
+              {/* Text content */}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-sm sm:text-base truncate text-[#524646] group-hover:text-[#EC5B38] transition-colors">
+                  {entry.title || entry.handle}
+                </h3>
+                {entry.description && (
+                  <p className="text-xs text-[#524646]/75 line-clamp-1 mt-0.5 leading-relaxed hidden sm:block">
+                    {entry.description}
+                  </p>
+                )}
+                <div className="flex items-center gap-2 mt-0.5 sm:mt-1.5 text-xs text-[#A8A492]">
+                  <span className="truncate max-w-[120px] sm:max-w-[200px] text-[#A8A492] font-medium">{getDomain(entry.url)}</span>
+                  <span className="w-1 h-1 rounded-full bg-[#A8A492] shrink-0" />
+                  <span className="font-bold text-[#EC5B38] shrink-0">{entry.clicks.toLocaleString()} clicks</span>
                 </div>
               </div>
 
-              <div className="mt-3 sm:mt-0 ml-11 sm:ml-0 shrink-0">
-                <p className="font-mono text-base sm:text-lg font-bold text-[#524646]">
+              {/* Price — always on right */}
+              <div className="shrink-0">
+                <p className="font-mono text-sm sm:text-base font-bold text-[#524646]">
                   {(entry.amount_cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 })}
                 </p>
               </div>
