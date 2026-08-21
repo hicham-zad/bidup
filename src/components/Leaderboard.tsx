@@ -331,7 +331,7 @@ export default function Leaderboard({ initialEntries }: { initialEntries: Entry[
                   {entry.title || entry.handle}
                 </h3>
                 {entry.description && (
-                  <p className="text-xs text-[#524646]/75 line-clamp-1 mt-0.5 leading-relaxed hidden sm:block">
+                  <p className="text-xs text-[#524646]/75 line-clamp-2 mt-0.5 leading-relaxed">
                     {entry.description}
                   </p>
                 )}
