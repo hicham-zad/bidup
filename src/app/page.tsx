@@ -55,7 +55,14 @@ export default async function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="w-full max-w-3xl mt-12 sm:mt-14 pt-6 border-t border-[#A8A492]/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#524646]/75 font-sans">
+      <footer className="w-full max-w-3xl mt-12 sm:mt-14 pt-6 border-t border-[#A8A492]/30 flex flex-col items-center gap-4 text-xs text-[#524646]/75 font-sans">
+        {/* Badge */}
+        <a href="https://daniellaunches.com" target="_blank" rel="noopener noreferrer">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://daniellaunches.com/badge-light.svg" alt="Featured on DanielLaunches" width="132" height="29" className="opacity-80 hover:opacity-100 transition-opacity" />
+        </a>
+
+        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Left: Brand */}
         <div className="flex items-center gap-2 font-bold text-sm text-[#524646]">
           <div className="w-5 h-5 text-[#EC5B38] shrink-0">
@@ -88,6 +95,7 @@ export default async function Home() {
           </a>
           <span className="text-[#A8A492]">·</span>
           <span className="text-[#A8A492]">© 2026. All rights reserved.</span>
+        </div>
         </div>
       </footer>
 
