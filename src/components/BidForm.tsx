@@ -96,7 +96,7 @@ export default function BidForm({ topBid }: { topBid: number }) {
   };
 
   return (
-    <div className="w-full max-w-3xl flex flex-col items-center">
+    <div id="bid-form" className="w-full max-w-3xl flex flex-col items-center">
       {/* Interactive Claim & Bid Stepper */}
       <div className="flex flex-col items-center gap-2 mb-5">
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-2xl sm:text-4xl font-bold tracking-tight text-[#524646]">
