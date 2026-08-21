@@ -3,40 +3,69 @@
 import { useEffect, useState } from 'react';
 
 export function HeaderStats() {
-  const [onlineCount, setOnlineCount] = useState<number | null>(null);
+  const [stats, setStats] = useState<{ activeUsers: number; last24Hours: number } | null>(null);
 
   useEffect(() => {
-    // Only run on client — avoids SSR hydration mismatch
-    setOnlineCount(Math.floor(Math.random() * 50) + 1000);
+    // Fetch live visitors initially and set up polling
+    const fetchVisitors = async () => {
+      try {
+        const res = await fetch('/api/competing-stats');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && typeof data.activeUsers === 'number') {
+            setStats({
+              activeUsers: data.activeUsers,
+              last24Hours: data.last24Hours ?? 0,
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching live visitors:', err);
+      }
+    };
 
-    const interval = setInterval(() => {
-      setOnlineCount((prev) => {
-        const base = prev ?? 1000;
-        const change = Math.floor(Math.random() * 7) - 3;
-        return Math.max(800, base + change);
-      });
-    }, 3000);
+    fetchVisitors();
+    const interval = setInterval(fetchVisitors, 30000); // refresh every 30s
 
     return () => clearInterval(interval);
   }, []);
 
+  if (!stats) return null;
+
   return (
-    <div className="flex items-center gap-3 text-xs sm:text-sm border border-[#A8A492]/40 bg-white/70 backdrop-blur-sm shadow-xs px-4 py-1.5 rounded-full text-[#524646]">
-      <div className="flex items-center gap-2 font-medium" suppressHydrationWarning>
+    <div className="flex items-center gap-2.5 text-[13px] sm:text-sm border border-[#A8A492]/20 bg-[#FDFBF8]/80 backdrop-blur-sm shadow-sm px-4 py-1.5 rounded-full text-[#524646] font-medium transition-all">
+      
+      {/* Live Visitors */}
+      <div className="flex items-center gap-2">
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EC5B38] opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EC5B38]"></span>
         </span>
-        <span suppressHydrationWarning className="text-[#524646]">
-          {onlineCount !== null ? (
-            <>
-              <strong className="font-semibold text-[#EC5B38]">{onlineCount.toLocaleString()}</strong> visitors online
-            </>
-          ) : (
-            'visitors online'
-          )}
+        <span className="text-[#EC5B38] font-semibold tracking-tight">
+          {stats.activeUsers.toLocaleString()} live visitors
         </span>
       </div>
+
+      <span className="text-[#524646]/30">·</span>
+
+      {/* 24 Hour Stats */}
+      <span className="text-[#524646]/80 tracking-tight">
+        {stats.last24Hours.toLocaleString()} in the last 24 hours
+      </span>
+
+      <span className="text-[#524646]/30">·</span>
+
+      {/* Link to stats */}
+      <a 
+        href="https://hub.vemetric.com/share/bidup.lol" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="text-[#524646] hover:text-[#EC5B38] transition-colors flex items-center group tracking-tight"
+      >
+        see stats
+        <span className="transform group-hover:translate-x-0.5 transition-transform ml-0.5">→</span>
+      </a>
+
     </div>
   );
 }
