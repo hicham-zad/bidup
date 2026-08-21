@@ -31,19 +31,23 @@ export async function POST(req: Request) {
         const supabase = getSupabaseAdmin();
         
         // 1. Check if the entry already exists
-        const { data: existing } = await supabase
+        const { data: existing, error: fetchError } = await supabase
           .from('entries')
           .select('id, amount_cents, lifetime_cents')
           .eq('handle', metadata.handle)
           .eq('url', metadata.url)
-          .single();
+          .maybeSingle();
+
+        if (fetchError) {
+          console.error('Error fetching existing entry:', fetchError);
+        }
 
         if (existing) {
           // Upsert: update amount_cents (only if higher) and add to lifetime_cents
           const newAmountCents = Math.max(existing.amount_cents, amount_cents);
           const newLifetimeCents = existing.lifetime_cents + amount_cents;
           
-          await supabase
+          const { error: updateError } = await supabase
             .from('entries')
             .update({
               amount_cents: newAmountCents,
@@ -54,9 +58,13 @@ export async function POST(req: Request) {
               last_bid_at: new Date().toISOString(),
             })
             .eq('id', existing.id);
+
+          if (updateError) {
+            console.error('Error updating entry:', updateError);
+          }
         } else {
           // Insert new row
-          await supabase
+          const { error: insertError } = await supabase
             .from('entries')
             .insert({
               url: metadata.url,
@@ -68,6 +76,10 @@ export async function POST(req: Request) {
               lifetime_cents: amount_cents,
               last_bid_at: new Date().toISOString(),
             });
+
+          if (insertError) {
+            console.error('Error inserting entry:', insertError);
+          }
         }
       }
     }

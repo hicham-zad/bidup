@@ -4,7 +4,7 @@ import BidForm from '@/components/BidForm';
 import { getSupabaseAdmin } from '@/utils/supabase-admin';
 import { HeaderStats } from '@/components/HeaderStats';
 
-export const revalidate = 30;
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const supabase = getSupabaseAdmin();
