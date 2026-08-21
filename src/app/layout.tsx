@@ -26,12 +26,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${jetbrainsMono.variable} h-full antialiased`}>
-      <Script
-        src="https://hub.vemetric.com/script.js"
-        data-token="sP8qPJqyP2sniWra"
-        strategy="afterInteractive"
-      />
+      <head>
+        <Script
+          strategy="afterInteractive"
+          data-website-id="dfid_IBaeZh5zwcM8FubdK97rg"
+          data-domain="bidup.lol"
+          data-allow-localhost="true"
+          src="https://datafa.st/js/script.js"
+        />
+      </head>
       <body className="min-h-full flex flex-col font-mono bg-[#FCF2E5] text-[#524646] selection:bg-[#EC5B38]/20 selection:text-[#524646]">{children}</body>
     </html>
   );
 }
+
